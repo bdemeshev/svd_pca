@@ -1,2 +1,3 @@
-# vif-nif
-Как устроена матрица (X'X)^{-1}?
+# SVD and PCA
+
+Hard introduction to PCA through SVD
