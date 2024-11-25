@@ -1,0 +1,425 @@
+% arara: xelatex
+\documentclass[12pt]{article}
+
+% \usepackage{physics}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+\usepackage{tikzducks}
+
+\usepackage{tikz} % картинки в tikz
+\usetikzlibrary{shapes, arrows, positioning}
+\usepackage{microtype} % свешивание пунктуации
+
+\usepackage{array} % для столбцов фиксированной ширины
+
+\usepackage{indentfirst} % отступ в первом параграфе
+
+\usepackage{sectsty} % для центрирования названий частей
+\allsectionsfont{\centering}
+
+\usepackage{amsmath, amsfonts, amssymb} % куча стандартных математических плюшек
+
+\usepackage{comment}
+
+\usepackage[top=2cm, left=1.2cm, right=1.2cm, bottom=2cm]{geometry} % размер текста на странице
+
+\usepackage{lastpage} % чтобы узнать номер последней страницы
+
+\usepackage{enumitem} % дополнительные плюшки для списков
+%  например \begin{enumerate}[resume] позволяет продолжить нумерацию в новом списке
+\usepackage{caption}
+
+\usepackage{url} % to use \url{link to web}
+
+
+\newcommand{\smallduck}{\begin{tikzpicture}[scale=0.3]
+    \duck[
+        cape=black,
+        hat=black,
+        mask=black
+    ]
+    \end{tikzpicture}}
+
+\usepackage{fancyhdr} % весёлые колонтитулы
+\pagestyle{fancy}
+\lhead{}
+\chead{SVD-PCA}
+\rhead{}
+\lfoot{}
+\cfoot{}
+\rfoot{}
+
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\usepackage{tcolorbox} % рамочки!
+
+\usepackage{todonotes} % для вставки в документ заметок о том, что осталось сделать
+% \todo{Здесь надо коэффициенты исправить}
+% \missingfigure{Здесь будет Последний день Помпеи}
+% \listoftodos - печатает все поставленные \todo'шки
+
+
+% более красивые таблицы
+\usepackage{booktabs}
+% заповеди из докупентации:
+% 1. Не используйте вертикальные линни
+% 2. Не используйте двойные линии
+% 3. Единицы измерения - в шапку таблицы
+% 4. Не сокращайте .1 вместо 0.1
+% 5. Повторяющееся значение повторяйте, а не говорите "то же"
+
+
+\setcounter{MaxMatrixCols}{20}
+% by crazy default pmatrix supports only 10 cols :)
+
+
+\usepackage{fontspec}
+\usepackage{libertine}
+\usepackage{polyglossia}
+
+\setmainlanguage{russian}
+\setotherlanguages{english}
+
+% download "Linux Libertine" fonts:
+% http://www.linuxlibertine.org/index.php?id=91&L=1
+% \setmainfont{Linux Libertine O} % or Helvetica, Arial, Cambria
+% why do we need \newfontfamily:
+% http://tex.stackexchange.com/questions/91507/
+% \newfontfamily{\cyrillicfonttt}{Linux Libertine O}
+
+\AddEnumerateCounter{\asbuk}{\russian@alph}{щ} % для списков с русскими буквами
+% \setlist[enumerate, 2]{label=\asbuk*),ref=\asbuk*}
+
+%% эконометрические сокращения
+\DeclareMathOperator{\Cov}{\mathbb{C}ov}
+\DeclareMathOperator{\Corr}{\mathbb{C}orr}
+\DeclareMathOperator{\Var}{\mathbb{V}ar}
+\DeclareMathOperator{\col}{col}
+\DeclareMathOperator{\row}{row}
+
+\let\P\relax
+\DeclareMathOperator{\P}{\mathbb{P}}
+
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\tr}{trace}
+\DeclareMathOperator{\trace}{trace}
+
+\DeclareMathOperator{\card}{card}
+
+\DeclareMathOperator{\Convex}{Convex}
+\DeclareMathOperator{\plim}{plim}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\scalp}{\langle}{\rangle}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\cF}{\mathcal{F}}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\hb}{\hat{\beta}}
+\newcommand{\dPois}{\mathrm{Pois}}
+
+
+\newcommand{\SSR}{\mathrm{SS}^{\text{res}}}
+\newcommand{\SSE}{\mathrm{SS}^{\text{expl}}}
+\newcommand{\SST}{\mathrm{SST}}
+
+
+\begin{document}
+Let's start with SVD decomposition of $X = UDV^T$.
+\[
+\begin{pmatrix}
+    x_{11} & x_{12} & \dots & x_{1k} \\
+    x_{21} & x_{22} & \dots & x_{2k} \\
+    x_{31} & x_{32} & \dots & x_{3k} \\
+    \vdots & \vdots &    & \vdots \\
+    x_{n1} & x_{n2} & \dots & x_{nk} \\
+\end{pmatrix} =
+\begin{pmatrix}
+    u_{11} & u_{12} & \dots & u_{1n} \\
+    u_{21} & u_{22} & \dots & u_{2n} \\
+    u_{31} & u_{32} & \dots & u_{3n} \\
+    \vdots & \vdots &    & \vdots \\
+    u_{n1} & u_{n2} & \dots & u_{nn} \\
+\end{pmatrix} \cdot 
+\begin{pmatrix}
+    d_{11} & 0 & 0 & \dots  & 0 \\
+    0 & d_{22} & 0 & \dots  & 0 \\
+    \vdots & \vdots &  &  & \vdots \\
+    0 & 0 &  \dots & \dots  & d_{kk} \\
+    0 & 0 & 0 & \dots  & 0 \\
+    \vdots & \vdots &  &  & \vdots \\
+    0 & 0 & 0 & \dots  & 0 \\
+\end{pmatrix} \cdot
+\begin{pmatrix}
+    v_{11} & v_{12} & \dots & v_{1k} \\
+    v_{21} & v_{22} & \dots & v_{2k} \\
+    \vdots & \vdots &    & \vdots \\
+    v_{k1} & v_{k2} & \dots & v_{kk} \\
+\end{pmatrix}^T
+\]
+
+The singular values on the diagonal of $D$ are positive and are sorted from largest to lowest, $d_{11} > d_{22} > \dots > d_{kk}$.
+
+The columns of the matrix $P = UD = XV$ are called principal components, $p_j = d_{jj} u_j$.
+
+Let $\hat D$ be the modified $D$ matrix, where we keep only the first $r$ positive elements on the diagonal, $d_{11}$, \dots, $d_{kk}$ 
+and replace the other elements by $0$.
+
+For $r = 2$ the approximation of the original $X$ matrix may be written as $\hat X = U \hat D V^T$,
+\[
+\begin{pmatrix}
+    \hat x_{11} & \hat x_{12} & \dots & \hat x_{1k} \\
+    \hat x_{21} & \hat x_{22} & \dots & \hat x_{2k} \\
+    \hat x_{31} & \hat x_{32} & \dots & \hat x_{3k} \\
+    \vdots & \vdots &    & \vdots \\
+    \hat x_{n1} & \hat x_{n2} & \dots & \hat x_{nk} \\
+\end{pmatrix} =
+\begin{pmatrix}
+    u_{11} & u_{12} & \dots & u_{1n} \\
+    u_{21} & u_{22} & \dots & u_{2n} \\
+    u_{31} & u_{32} & \dots & u_{3n} \\
+    \vdots & \vdots &    & \vdots \\
+    u_{n1} & u_{n2} & \dots & u_{nn} \\
+\end{pmatrix} \cdot 
+\begin{pmatrix}
+    d_{11} & 0 & 0 & \dots  & 0 \\
+    0 & d_{22} & 0 & \dots  & 0 \\
+    0 & 0 &  0 & \dots  & 0 \\
+    \vdots & \vdots &  &  & \vdots \\
+    0 & 0 & 0 & \dots  & 0 \\
+\end{pmatrix} \cdot
+\begin{pmatrix}
+    v_{11} & v_{12} & \dots & v_{1k} \\
+    v_{21} & v_{22} & \dots & v_{2k} \\
+    \vdots & \vdots &    & \vdots \\
+    v_{k1} & v_{k2} & \dots & v_{kk} \\
+\end{pmatrix}^T
+\]
+The approximation $\hat X = U\hat D V^T$ may be also written as $\hat X = U_* D_* V_*^T$,
+\[
+\begin{pmatrix}
+    \hat x_{11} & \hat x_{12} & \dots & \hat x_{1k} \\
+    \hat x_{21} & \hat x_{22} & \dots & \hat x_{2k} \\
+    \hat x_{31} & \hat x_{32} & \dots & \hat x_{3k} \\
+    \vdots & \vdots &    & \vdots \\
+    \hat x_{n1} & \hat x_{n2} & \dots & \hat x_{nk} \\
+\end{pmatrix} =
+\begin{pmatrix}
+    u_{11} & u_{12}  \\
+    u_{21} & u_{22} \\
+    u_{31} & u_{32} \\
+    \vdots & \vdots \\
+    u_{n1} & u_{n2} \\
+\end{pmatrix} \cdot 
+\begin{pmatrix}
+    d_{11} & 0 \\
+    0 & d_{22} \\
+\end{pmatrix} \cdot
+\begin{pmatrix}
+    v_{11} & v_{12}  \\
+    v_{21} & v_{22} \\
+    \vdots & \vdots \\
+    v_{k1} & v_{k2} \\
+\end{pmatrix}^T
+\]
+
+The matrix $U_*$ consists of the leftmost $r$ columns of $U$.
+The matrix $D_*$ consists of the top-left $r\times r$ corner of $D$.
+The matrix $V_*^T$ consists of the top $r$ rows of $V^T$.
+
+
+Errors of approximation are stored in the matrix:
+\[
+X - \hat X = UDV^T - U \hat D V^T = U(D - \hat D) V^T
+\]
+
+
+Let's calculate the quality of this approximation. 
+
+We'll use two facts from linear algebra: $\trace(LR) = \trace(RL)$ and  $\trace(XX^T) = \trace(X^TX) = \sum x_{ij}^2$.
+
+\[
+\sum_{ij} x_{ij}^2 = \trace(X^TX) = \trace(VD^T U^TUDV^T ) = \trace(DD^T U^TU)= \trace(D^TD) = \sum_{i} d_{ii}^2
+\]
+By the same argument
+\[
+\sum_{ij} p_{ij}^2 = \trace(P^TP) = \trace(D^T U^T UD) =  \trace(D^TD) = \sum_{i} d_{ii}^2
+\]
+
+Recall that all vectors in the $X$ matrix are standardized.
+Sample variance of a typical vector $x_j$ is given by $\sum_i (x_ij - 0)^2 / (n-1) = 1$.
+Hence $\norm{x_j}^2 = \sum_i x_{ij}^2 = (n-1)$.
+
+Hence,
+\[
+\sum_{ij} x_{ij}^2 = \norm{x_1}^2 + \norm{x_2}^2 + \dots + \norm{x_k}^2 = k (n-1) = \sum_{i=1}^k d_{ii}^2;
+\]
+Or, 
+\[
+\sum_{ij} p_{ij}^2 = \norm{p_1}^2 + \norm{p_2}^2 + \dots + \norm{p_k}^2 = k (n-1) = \sum_{i=1}^k d_{ii}^2;
+\]
+
+
+The sum of squares of all approximation errors:
+\[
+Q = \sum_{ij} (x_{ij} - \hat x_{ij})^2 = \trace((X - \hat X)(X - \hat X)^T)
+\]
+
+What is inside the trace?
+\[
+(X - \hat X)(X - \hat X)^T = V(D - \hat D)^T U^T U(D - \hat D) V^T= V(D - \hat D)^T (D - \hat D) V^T
+\]
+
+Let's finalize the calculation of total approximation error $Q$:
+\begin{multline*}
+Q = \trace((X - \hat X)(X - \hat X)^T) = \trace(V(D - \hat D)^T (D - \hat D) V^T) = \trace((D - \hat D)^T (D - \hat D) V^TV) = \\
+ = \trace((D - \hat D)^T (D - \hat D)) = \sum_{i=r+1}^{k} d_{ii}^2 = k (n-1) - \sum_{i=1}^r d_{ii}^2;
+\end{multline*}
+
+
+Let's regress all the columns of $X$ onto predictors $U_*$ and obtain predictions.
+
+We use the standard formula $\hat y = X (X^T X)^{-1}X^T y$ with $U_*$ instead of $X$ and $X$ instead of $y$:
+\[
+    U_* (U_*^T U_*)^{-1} U_*^T X = U_* (I)^{-1} U_*^T U \hat D V^T = U_* D_* V_*^T = \hat X
+\]
+
+So! The $\hat X$ may be viewed as low-rank approximation of $X$ from SVD or as matrix of forecasts of regressions of every original regressor $x_j$ on $r$ first principal components $p_1$, \dots, $p_r$.
+Hence the sum of all squared approximation errors $Q$ is the sum of all sum of squared residuals from these regressions
+\[
+Q = \sum_{ij} (x_{ij} - \hat x_{ij})^2 = \norm{x_1 - \hat x_1}^2 + \dots + \norm{x_k - \hat x_k}^2 = \SSR_1 + \dots + \SSR_k.
+\]
+
+Let's calculate the $R^2$ in the first regression:
+\[
+R^2_1 = 1 - \frac{\SSR_1 }{ \SST_1} = 1 - \frac{\norm{x_1 - \hat x_1}^2 }{ \norm{x_1}^2}= 1 - \frac{\norm{x_1 - \hat x_1}^2 }{ n - 1}
+\]
+
+The sum of all $R^2_j$ hence is
+\[
+\sum R_j^2 = k - \frac{\sum (x_{ij} - \hat x_{ij})^2}{n - 1}.
+\]
+
+The average $R^2_j$, also called proportion of variance explained, is
+\[
+\frac{\sum R_j^2}{k} = 1 - \frac{\sum (x_{ij} - \hat x_{ij})^2}{k(n - 1)} = 1 - \frac{Q}{k(n-1)} = \frac{\sum_{i=1}^r d_{ii}^2}{\sum_{i=1}^k d_{ii}^2}.
+\]
+
+Sample correlation matrix of columns $X$ with columns of $P$ (or $U$)  is called loadings matrix, $L$.
+Sample correlation matrix is just sample correlation of standardized vectors. 
+The columns in $X$ are already standardized so we need to standardize only columns of $P$, or columns of $U$.
+\[
+L = \frac{X^T P^{st}}{n - 1} = \frac{X^T U^{st}}{n - 1}
+\]
+As $U^{st} = \sqrt{n-1} U$ we get
+\[
+L =  \frac{X^T U^{st}}{n - 1} = \frac{VD^T U^T U\sqrt{n-1}}{n-1} = \frac{1}{\sqrt{n-1}}V D^T.
+\]
+
+The sample correlation matrix of columns of $X$ is
+\[
+\frac{X^T X}{n-1} = \frac{V D^T U^T UDV^T}{n - 1} = \frac{V D^T D V^T}{ n - 1} = V \Lambda V^T.
+\]
+Here $\Lambda$ is the diagonalized sample correlation matrix of columns of $X$.
+On its diagonal we have $\lambda_i = d_{ii}^2 / (n - 1)$.
+The eigenvectors of the sample correlation matrix are just columns of $V$. 
+
+The loading matrix can be expressed in terms of $V$ and $\Lambda$:
+\[
+L = V \Lambda^{1/2} = V \cdot \begin{pmatrix}
+    \sqrt{\lambda_1 } & 0 & \dots & 0 \\
+    0  & \sqrt{\lambda_2} & \dots & 0 \\
+    \dots & \dots & \dots & \dots \\
+    0 & 0 & \dots & \sqrt{\lambda_k} \\
+\end{pmatrix}.
+\]
+As $\lambda_i = d_{ii}^2 / (n-1)$ the average $R^2_j$ is also 
+\[
+\frac{\sum R_j^2}{k} =  \frac{\sum_{i=1}^r d_{ii}^2}{\sum_{i=1}^k d_{ii}^2} =  \frac{\sum_{i=1}^r \lambda_i}{\sum_{i=1}^k \lambda_i} .
+\]
+
+Two facts about $L$ matrix:
+\[
+L^T L = \Lambda^{1/2} V^T V \Lambda^{1/2} = \Lambda^1 =  \begin{pmatrix}
+    \lambda_1 & 0 & \dots & 0 \\
+    0  & \lambda_2 & \dots & 0 \\
+    \dots & \dots & \dots & \dots \\
+    0 & 0 & \dots & \lambda_k \\
+\end{pmatrix}
+\]
+Hence $\ell_i \perp \ell_j$ for $i \neq j$, $\norm{\ell_j}^2= \lambda_j = d_{jj} / (n - 1)$.
+The sample correlation matrix of columns of $X$ may be written as
+\[
+LL^T = \frac{1}{n-1}V D^T D V^T = \frac{X^TX}{n - 1}
+\]
+
+
+Let's create a new variable $q$ as a linear combination of columns of $X$ with weight $w$, $q = Xw$.
+
+We would like to maximize the sample variance of $Xw$ while keeping $\norm{w} = 1$.
+As sample variance for centered variable is just $\norm{Xw}^2 / (n - 1)$
+this is equivalent
+\[
+\norm{Xw}^2  \to \max_{\norm{w} = 1}
+\]
+
+Solution 1 (no Lagrange, no matrix differential):
+
+We can rewrite $\norm{Xw}^2$ as
+\[
+\norm{Xw}^2 = (Xw)^T Xw = w^T X^T Xw = w^T VD^T DV^T w
+\]
+Let's introduce $a = V^T w$.
+Remark that $\norm{a}^2 = a^T a = w^T VV^T w = w^T w = 1$ and
+\[
+    \norm{Xw}^2 = a^T \cdot \begin{pmatrix}
+        d_{11} & 0 & \dots & 0 \\
+        0  & d_{22} & \dots & 0 \\
+        \dots & \dots & \dots & \dots \\
+        0 & 0 & \dots & d_{kk} \\
+    \end{pmatrix} \cdot a
+    = d_{11}^2 a_1^2 + \dots + d_{kk} a_k^2
+\]
+For $k = 3$ this may look like
+\[
+    \norm{Xw}^2 = 1.3 a_1^2 + 0.7 a_2^2 + 0.2 a_3^2.
+\]
+As $\norm{a}^2 = a_1^2 + \dots + a_k^2 = 1$ we conclude that the optimal point is $a = (1, 0, \dots, 0)$. 
+And optimal $w$ is $w = Va = v_1$, the first column of $V$.
+
+Solution 2 (with matrix differential):
+
+\[
+\norm{Xw}^2  \to \max_{\norm{w} = 1}
+\]
+
+As $w^Tw = 1$,
+\[
+    \frac{\norm{Xw}^2}{n - 1} = \frac{w^T VD^T DV^T w}{n-1} = \frac{w^T VD^T DV^T w }{ (n - 1)w^Tw }   = \frac{w^T \Lambda w}{ w^T w}
+\]
+Now take differential 
+\[
+d \frac{w^T \Lambda w}{ w^T w} = \frac{...}{ (w^T w)^2}
+\]
+
+Solution 3 (with Lagrange)
+
+
+
+\end{document}
+

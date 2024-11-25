@@ -1,2 +1,2 @@
-# svd_pca
-SVD and PCA
+# vif-nif
+Как устроена матрица (X'X)^{-1}?
