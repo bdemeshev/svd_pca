@@ -102,7 +102,10 @@
 
 %% эконометрические сокращения
 \DeclareMathOperator{\Cov}{\mathbb{C}ov}
+\DeclareMathOperator{\hCov}{\widehat{\mathbb{C}ov}}
 \DeclareMathOperator{\Corr}{\mathbb{C}orr}
+\DeclareMathOperator{\hCorr}{\widehat{\mathbb{C}orr}}
+\DeclareMathOperator{\sCorr}{s\mathbb{C}orr}
 \DeclareMathOperator{\Var}{\mathbb{V}ar}
 \DeclareMathOperator{\col}{col}
 \DeclareMathOperator{\row}{row}
@@ -320,15 +323,40 @@ The average $R^2_j$, also called proportion of variance explained, is
 \frac{\sum R_j^2}{k} = 1 - \frac{\sum (x_{ij} - \hat x_{ij})^2}{k(n - 1)} = 1 - \frac{Q}{k(n-1)} = \frac{\sum_{i=1}^r d_{ii}^2}{\sum_{i=1}^k d_{ii}^2}.
 \]
 
-Sample correlation matrix of columns $X$ with columns of $P$ (or $U$)  is called loadings matrix, $L$.
-Sample correlation matrix is just sample correlation of standardized vectors. 
+How can we extract all these $R^2_j$ for different number of principal components?
+For simplicity let's consider $x_1$ and the first two principal components.
+The coefficient $R^2_1$ comes from regression of $x_1$ onto first $r = 2$ principal components $p_1$, $p_2$.
+\[
+\hat x_1 = v_{11} p_1 + v_{12} p_2.
+\]
+Artificial regressors $p_1$ and $p_2$ are orthogonal, hence $R^2_1$ may be decomposed into 
+\[
+R^2_1 = R^2_{11} + R^2_{12},
+\]
+where $R^2_{11}$ comes from the regression of $x_1$ onto $p_1$ and $R^2_{22}$ — from the regression of $x_1$ onto $p_2$.
+The orthogonality of regressors also means that coefficient estimate $v_{11}$ may be obtained from a univariate regression of $x_1$ onto $p_1$ alone. 
+Similarly the regression coefficient $v_{12}$ may be also obtained from a univariate regression of $x_1$ onto $p_2$ alone. 
+
+In a simple regression of original variable $x_i$ onto principal component $p_j$ the $R^2_{ij}$ may be obtained as a squared value of sample correlation between $x_i$ and $p_j$.
+The sample correlation matrix of all columns $X$ with all columns of $P$ is called loadings matrix, $L$.
+The sample correlation is matrix is unaffected by scaling, so $L$ is also a sample correlation matrix of columns of $X$ and columns of $U$.
+Sample correlation matrix is just a sample covariance of standardized vectors.
 The columns in $X$ are already standardized so we need to standardize only columns of $P$, or columns of $U$.
 \[
-L = \frac{X^T P^{st}}{n - 1} = \frac{X^T U^{st}}{n - 1}
+L = \begin{pmatrix}
+    \sCorr(x_1, p_1) & \sCorr(x_1, p_2) & \ldots \\
+    \sCorr(x_2, p_1) & \sCorr(x_2, p_2) & \ldots \\
+    \vdots & \vdots & \vdots 
+\end{pmatrix} = 
+\frac{X^T P^{st}}{n - 1} = \frac{X^T U^{st}}{n - 1}
 \]
 As $U^{st} = \sqrt{n-1} U$ we get
 \[
 L =  \frac{X^T U^{st}}{n - 1} = \frac{VD^T U^T U\sqrt{n-1}}{n-1} = \frac{1}{\sqrt{n-1}}V D^T.
+\]
+Hence, in the row $1$ the sum of the first $r$ squared values will give the coefficient $R^2_1$,
+\[
+R^2_1 = \ell_{11}^2 + \ell_{12}^2 + \dots + \ell_{1r}^2.
 \]
 
 The sample correlation matrix of columns of $X$ is
@@ -353,7 +381,7 @@ As $\lambda_i = d_{ii}^2 / (n-1)$ the average $R^2_j$ is also
 \frac{\sum R_j^2}{k} =  \frac{\sum_{i=1}^r d_{ii}^2}{\sum_{i=1}^k d_{ii}^2} =  \frac{\sum_{i=1}^r \lambda_i}{\sum_{i=1}^k \lambda_i} .
 \]
 
-Two facts about $L$ matrix:
+Two more facts about $L$ matrix:
 \[
 L^T L = \Lambda^{1/2} V^T V \Lambda^{1/2} = \Lambda^1 =  \begin{pmatrix}
     \lambda_1 & 0 & \dots & 0 \\
