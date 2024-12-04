@@ -353,7 +353,7 @@ L = \begin{pmatrix}
 \end{pmatrix} = 
 \frac{X^T P^{st}}{n - 1} = \frac{X^T U^{st}}{n - 1}
 \]
-As $U^{st} = \sqrt{n-1} U$ we get
+As $P^{st} = U^{st} = \sqrt{n-1} U$ we get
 \[
 L =  \frac{X^T U^{st}}{n - 1} = \frac{VD^T U^T U\sqrt{n-1}}{n-1} = \frac{1}{\sqrt{n-1}}V D^T.
 \]
@@ -366,6 +366,13 @@ If we continue summation over all $k$ principal components we would obtain a per
     \ell_{11}^2 + \ell_{12}^2 + \dots + \ell_{1k}^2 = 1.
 \]
 Hence, $\norm{\row_i L} = 1$.
+
+Another meaning of loadings may be seen from other view of SVD:
+\[
+X = U D V^T = U (VD^T)^T = \sqrt{n - 1}U (VD^T / \sqrt{n - 1})^T = U^{st} L^T.
+\]
+Hence, if we decompose original regressor $x_i$ as a linear combination of standardized 
+principal components then the weights will be given by the $i$-th row of the loadings matrix $L$.
 
 The sample correlation matrix of columns of $X$ is
 \[
@@ -403,7 +410,7 @@ The sample correlation matrix of columns of $X$ may be written as
 \[
 LL^T = \frac{1}{n-1}V D^T D V^T = \frac{X^TX}{n - 1}
 \]
-We again see that $(LL^T)_{ii} = 1$ :)
+We again see that $(LL^T)_{ii} = 1$ as sample variance of standardized $x_i$.
 
 Let's create a new variable $q$ as a linear combination of columns of $X$ with weight $w$, $q = Xw$.
 
