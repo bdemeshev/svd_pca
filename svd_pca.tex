@@ -161,13 +161,13 @@ Let's start with SVD decomposition of $X = UDV^T$.
     u_{n1} & u_{n2} & \dots & u_{nn} \\
 \end{pmatrix} \cdot 
 \begin{pmatrix}
-    d_{11} & 0 & 0 & \dots  & 0 \\
-    0 & d_{22} & 0 & \dots  & 0 \\
-    \vdots & \vdots &  &  & \vdots \\
-    0 & 0 &  \dots & \dots  & d_{kk} \\
-    0 & 0 & 0 & \dots  & 0 \\
-    \vdots & \vdots &  &  & \vdots \\
-    0 & 0 & 0 & \dots  & 0 \\
+    d_{11} &  &     &  \\
+     & d_{22} &     &  \\
+     &  & \ddots    &  \\
+     &  &   &    d_{kk} \\
+     &  &  &     \\
+     &  &  &    \\
+     &  &  &     \\
 \end{pmatrix} \cdot
 \begin{pmatrix}
     v_{11} & v_{12} & \dots & v_{1k} \\
@@ -177,7 +177,7 @@ Let's start with SVD decomposition of $X = UDV^T$.
 \end{pmatrix}^T
 \]
 
-The singular values on the diagonal of $D$ are positive and are sorted from largest to lowest, $d_{11} > d_{22} > \dots > d_{kk}$.
+Blank entries are zeros! The singular values on the diagonal of $D$ are positive and are sorted from largest to lowest, $d_{11} > d_{22} > \dots > d_{kk}$.
 
 The columns of the matrix $P = UD = XV$ are called principal components, $p_j = d_{jj} u_j$.
 
@@ -201,11 +201,13 @@ For $r = 2$ the approximation of the original $X$ matrix may be written as $\hat
     u_{n1} & u_{n2} & \dots & u_{nn} \\
 \end{pmatrix} \cdot 
 \begin{pmatrix}
-    d_{11} & 0 & 0 & \dots  & 0 \\
-    0 & d_{22} & 0 & \dots  & 0 \\
-    0 & 0 &  0 & \dots  & 0 \\
-    \vdots & \vdots &  &  & \vdots \\
-    0 & 0 & 0 & \dots  & 0 \\
+    d_{11} &  &     &  \\
+     & d_{22} &     &  \\
+     &  &  \phantom{d_{33}} & \phantom{d_{33}}  \\
+     &  &   &     \\
+     &  &  &     \\
+     &  &  &    \\
+     &  &  &     \\
 \end{pmatrix} \cdot
 \begin{pmatrix}
     v_{11} & v_{12} & \dots & v_{1k} \\
@@ -231,8 +233,8 @@ The approximation $\hat X = U\hat D V^T$ may be also written as $\hat X = U_* D_
     u_{n1} & u_{n2} \\
 \end{pmatrix} \cdot 
 \begin{pmatrix}
-    d_{11} & 0 \\
-    0 & d_{22} \\
+    d_{11} &  \\
+     & d_{22} \\
 \end{pmatrix} \cdot
 \begin{pmatrix}
     v_{11} & v_{12}  \\
@@ -422,10 +424,10 @@ Let's introduce $a = V^T w$.
 Remark that $\norm{a}^2 = a^T a = w^T VV^T w = w^T w = 1$ and
 \[
     \norm{Xw}^2 = a^T \cdot \begin{pmatrix}
-        d_{11} & 0 & \dots & 0 \\
-        0  & d_{22} & \dots & 0 \\
+        d_{11} &  & \dots &  \\
+          & d_{22} & \dots &  \\
         \dots & \dots & \dots & \dots \\
-        0 & 0 & \dots & d_{kk} \\
+         &  & \dots & d_{kk} \\
     \end{pmatrix} \cdot a
     = d_{11}^2 a_1^2 + \dots + d_{kk} a_k^2
 \]
@@ -476,6 +478,12 @@ w^T X^TX w = w^T \mu w = \mu w^T w = \mu.
 \]
 We should take the highest eigenvalue, that is $\mu_1 = (n - 1)\lambda_1$ as $\lambda_i$ are eigenvalues of the matrix $X^TX/(n-1)$.
 
+
+Some useful sources:
+
+\url{https://www.math.chalmers.se/Stat/Grundutb/GU/MSA220/S19/extra/svd-related-theory.pdf}
+
+\url{https://www.cs.columbia.edu/~djhsu/AML/lectures/notes-pca.pdf}
 
 \end{document}
 
