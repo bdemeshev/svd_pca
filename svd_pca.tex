@@ -353,6 +353,13 @@ L = \begin{pmatrix}
 \end{pmatrix} = 
 \frac{X^T P^{st}}{n - 1} = \frac{X^T U^{st}}{n - 1}
 \]
+The meaning of its elements is threefold! 
+First, $\ell_{ij}$ is the sample correlation between original $x_i$ and principal component $p_j$,
+or normed principal component $u_j$ or standardized principle component $\sqrt{n-1} u_j$.
+Second, $\ell_{ij}$ is the estimate of coefficient in the simple regression of $x_i$ onto standardized principle component $\sqrt{n-1} u_j$.
+Third, as principal components are orthogonal, 
+$\ell_{ij}$ is the estimate of coefficient in the multivariate regression of $x_i$ onto all standardized components before the component $\sqrt{n-1} u_j$.
+
 As $P^{st} = U^{st} = \sqrt{n-1} U$ we get
 \[
 L =  \frac{X^T U^{st}}{n - 1} = \frac{VD^T U^T U\sqrt{n-1}}{n-1} = \frac{1}{\sqrt{n-1}}V D^T.
@@ -373,6 +380,7 @@ X = U D V^T = U (VD^T)^T = \sqrt{n - 1}U (VD^T / \sqrt{n - 1})^T = U^{st} L^T.
 \]
 Hence, if we decompose original regressor $x_i$ as a linear combination of standardized 
 principal components then the weights will be given by the $i$-th row of the loadings matrix $L$.
+
 
 The sample correlation matrix of columns of $X$ is
 \[
