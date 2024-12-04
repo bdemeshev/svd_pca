@@ -116,6 +116,7 @@
 \DeclareMathOperator{\E}{\mathbb{E}}
 \DeclareMathOperator{\tr}{trace}
 \DeclareMathOperator{\trace}{trace}
+\DeclareMathOperator{\Lagr}{Lagrange}
 
 \DeclareMathOperator{\card}{card}
 
@@ -358,6 +359,11 @@ Hence, in the row $1$ the sum of the first $r$ squared values will give the coef
 \[
 R^2_1 = \ell_{11}^2 + \ell_{12}^2 + \dots + \ell_{1r}^2.
 \]
+If we continue summation over all $k$ principal components we would obtain a perfect prediction of $x_1$,
+\[
+    \ell_{11}^2 + \ell_{12}^2 + \dots + \ell_{1k}^2 = 1.
+\]
+Hence, $\norm{\row_i L} = 1$.
 
 The sample correlation matrix of columns of $X$ is
 \[
@@ -395,7 +401,7 @@ The sample correlation matrix of columns of $X$ may be written as
 \[
 LL^T = \frac{1}{n-1}V D^T D V^T = \frac{X^TX}{n - 1}
 \]
-
+We again see that $(LL^T)_{ii} = 1$ :)
 
 Let's create a new variable $q$ as a linear combination of columns of $X$ with weight $w$, $q = Xw$.
 
@@ -430,7 +436,7 @@ For $k = 3$ this may look like
 As $\norm{a}^2 = a_1^2 + \dots + a_k^2 = 1$ we conclude that the optimal point is $a = (1, 0, \dots, 0)$. 
 And optimal $w$ is $w = Va = v_1$, the first column of $V$.
 
-Solution 2 (with matrix differential):
+Solution 2 (Rayleigh quotient):
 
 \[
 \norm{Xw}^2  \to \max_{\norm{w} = 1}
@@ -447,6 +453,28 @@ d \frac{w^T \Lambda w}{ w^T w} = \frac{...}{ (w^T w)^2}
 
 Solution 3 (with Lagrange)
 
+Let's write the Lagrangian function wit Lagrange multiplier denoted $\mu$:
+\[
+\Lagr(w, \mu) = \norm{Xw}^2 + \mu (1 - \norm{w}^2).
+\]
+The differential with respect to $dw$ is 
+\[
+d \Lagr = 2w^T X^T X dw - 2 \mu w^T dw.
+\]
+First order conditions are
+\[
+\begin{cases}
+2w^T X^T X - 2 \mu w^T = 0 \\
+w^Tw = 1  
+\end{cases}
+\]
+Or, $X^TX w = \mu w$. 
+Hence $\mu$ should be the eigenvalue of $X^TX$ matrix and $w$ should be the eigenvector with $\norm{w} = 1$.
+The optimal value of the function is 
+\[
+w^T X^TX w = w^T \mu w = \mu w^T w = \mu.
+\]
+We should take the highest eigenvalue, that is $\mu_1 = (n - 1)\lambda_1$ as $\lambda_i$ are eigenvalues of the matrix $X^TX/(n-1)$.
 
 
 \end{document}
